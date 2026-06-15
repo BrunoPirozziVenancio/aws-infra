@@ -1,0 +1,8 @@
+# Playbook principal que executa a role nodejs.
+
+- name: Configuração de ambiente Node.js
+  hosts: tag_Name_nodejs-server             # Alvo: instâncias com tag Name=nodejs-server
+  become: true              # Permite usar sudo (necessário para instalar pacotes)
+
+  roles:
+    - nodejs            # Executa a role localizada em roles/nodejs

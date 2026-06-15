@@ -1,0 +1,71 @@
+# Arquivo com todas as tarefas de segurança e criação de usuários.
+
+# Cria um grupo chamado 'devops', usado para agrupar os usuários que terão acesso SSH
+
+- name: Criar grupo devops
+  group:
+    name: devops
+    state: present
+
+# Cria o usuário admin1, adicionando ao grupo devops, com shell bash e diretório home
+
+- name: Criar usuário admin1
+  user:
+    name: admin1
+    groups: devops
+    shell: /bin/bash
+    create_home: yes
+
+    # Mesmo para o admin2
+    
+- name: Criar usuário admin2
+  user:
+    name: admin2
+    groups: devops
+    shell: /bin/bash
+    create_home: yes
+
+# Cria o diretório .ssh na home de cada usuário, com permissão 700 (somente o dono pode acessar)
+
+- name: Criar diretório .ssh para os usuários
+  file:
+    path: "/home/{{ item }}/.ssh"
+    state: directory
+    mode: '0700'
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - admin1
+    - admin2
+
+# Copia a chave pública correspondente para o arquivo authorized_keys de cada usuário
+# Isso define quem poderá acessar via SSH sem senha
+
+- name: Copiar chave pública para os usuários
+  copy:
+    src: "{{ item.src }}"                                    # Arquivo local (em roles/security/files)
+    dest: "/home/{{ item.user }}/.ssh/authorized_keys"                 # Arquivo remoto
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    mode: '0600'                                    # Só o dono pode ler o arquivo
+  loop:
+    - { user: 'admin1', src: 'admin.pub' }
+    - { user: 'admin2', src: 'devops.pub' }
+
+# Edita o arquivo de configuração do SSH para desativar o login como root
+
+- name: Desabilitar login como root via SSH
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+    state: present
+
+# Reinicia o serviço SSH para aplicar a nova configuração (sem login root)
+
+- name: Reiniciar o serviço SSH
+  service:
+    name: sshd
+    state: restarted
+
+

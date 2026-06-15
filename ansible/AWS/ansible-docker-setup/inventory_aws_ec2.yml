@@ -1,0 +1,9 @@
+# Esse arquivo define o inventário estático para o Ansible se conectar à EC2. A chave PEM deve estar com permissão chmod 400
+
+all:
+  hosts:
+    ec2_instance:
+      ansible_host: 54.123.45.67               # IP público da sua instância EC2
+      ansible_user: ec2-user                 # Usuário padrão do Ubuntu na AWS
+      ansible_ssh_private_key_file: ~/.ssh/minha-chave.pem          # Caminho da sua chave .pem
+

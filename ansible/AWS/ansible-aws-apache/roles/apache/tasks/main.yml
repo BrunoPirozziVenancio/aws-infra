@@ -1,0 +1,22 @@
+# Instala o Apache com o yum, que é o gerenciador de pacotes do Amazon Linux.
+
+- name: Instalar Apache
+  yum:
+    name: httpd
+    state: present
+
+# Copia o arquivo index.html.j2 (modelo Jinja2) para dentro do servidor. Isso personaliza a página que aparece ao acessar o IP.
+
+- name: Substituir página index
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+
+# Garante que o serviço httpd (Apache) está ligado e configurado para iniciar com o sistema.
+
+- name: Iniciar e habilitar Apache
+  service:
+    name: httpd
+    state: started
+    enabled: true

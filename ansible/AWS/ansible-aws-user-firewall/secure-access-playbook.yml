@@ -1,0 +1,6 @@
+- name: Configurar segurança de acesso + firewall na AWS EC2
+  hosts: all
+  become: yes      # eleva para root
+  roles:
+    - secure_access
+

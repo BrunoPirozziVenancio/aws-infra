@@ -1,0 +1,4 @@
+# Chave pública do usuário admin1. Será copiada para o arquivo authorized_keys.
+
+ssh-rsa AAAAB3Nza... admin@meu-laptop
+

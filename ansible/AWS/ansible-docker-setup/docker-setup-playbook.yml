@@ -1,0 +1,8 @@
+# Esse playbook apenas chama a role docker_install, permitindo modularidade e reuso de tarefas
+
+- name: Instalar Docker + Docker Compose na EC2
+  hosts: all
+  become: yes          # Eleva para root (necessário para instalação)
+  roles:
+    - docker_install
+

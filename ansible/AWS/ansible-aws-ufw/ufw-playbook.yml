@@ -1,0 +1,9 @@
+# Playbook principal que executa a role ufw com privilégios de root
+
+- name: Aplicar regras UFW (Firewall) em instância AWS
+  hosts: tag_Name_secure-server
+  become: true
+
+  roles:
+    - ufw
+

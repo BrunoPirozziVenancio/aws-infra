@@ -1,0 +1,11 @@
+plugin: aws_ec2         #   Usa o plugin oficial da AWS
+regions:                    # Define a região (mude para a sua, ex: sa-east-1 se for SP)
+  - us-east-1
+keyed_groups:                  # Agrupa os hosts por tags (ex: tag_Name_webserver)
+  - key: tags.Name
+    prefix: ec2_tag_Name
+filters:                          # Só pega instâncias que estão com tag Ansible=true
+  tag:Ansible: "true"
+  instance-state-name: "running"
+hostnames:                # Ele vai usar o DNS público da EC2 para se conectar
+  - public_dns_name

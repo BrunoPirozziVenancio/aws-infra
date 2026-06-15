@@ -1,0 +1,62 @@
+# Contém as tarefas para configurar o ambiente Node.js com Git e PM2.
+
+- name: Instalar dependências básicas
+  yum:
+    name:
+      - gcc
+      - gcc-c++
+      - make
+      - git
+      - curl
+    state: present               # Instala os pacotes se ainda não estiverem presentes
+
+# Baixa e instala o NVM (Node Version Manager)
+
+- name: Instalar NVM
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.bashrc
+    source ~/.bashrc
+  args:
+    executable: /bin/bash                # Garante que o shell seja interpretado corretamente
+
+# Instala o Node.js usando o NVM
+
+- name: Instalar Node.js com NVM
+  shell: |
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh"
+    nvm install 18                     # Instala a versão 18 do Node.js
+    nvm use 18                     # Usa essa versão como padrão
+  args:
+    executable: /bin/bash
+
+# Instala o PM2 globalmente para gerenciar a aplicação
+
+- name: Instalar PM2
+  npm:
+    name: pm2
+    global: yes
+
+# Clona o repositório da aplicação Node.js
+# Esse repositório contém um projeto Node.js simples, que é uma aplicação de verdade que responde com “Hello World”, feita para testar
+# Caso tenha um projeto, pode trocar a URL Ex. repo: https://github.com/bruno/meu-app-node.git  
+
+- name: Clonar repositório de app Node.js
+  git:
+    repo: https://github.com/heroku/node-js-sample.git
+    dest: /home/ec2-user/node-app
+    version: master
+    force: yes                      # Força o clone mesmo que o diretório já exista
+
+# Inicia a aplicação com PM2
+
+- name: Executar app com PM2
+  shell: |
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh"
+    cd /home/ec2-user/node-app
+    pm2 start index.js                # Roda o app com PM2 para que fique ativo mesmo após reboot
+  args:
+    executable: /bin/bash

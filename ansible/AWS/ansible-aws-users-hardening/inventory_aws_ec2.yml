@@ -1,0 +1,15 @@
+# Define o inventário dinâmico da AWS, identificando a(s) instância(s) que devem ser gerenciadas.
+
+plugin: aws_ec2                    # Usa o plugin nativo do Ansible para AWS
+regions:
+  - us-east-1                      # Define a região onde as instâncias estão (ex: us-east-1 ou sa-east-1)
+filters:
+  tag:Ansible: "true"              # Só inclui instâncias que tenham a tag Ansible=true
+  tag:Name: "hardened-server"      # E a tag Name=hardened-server (exclusiva deste projeto)
+  instance-state-name: running     # Garante que apenas instâncias ativas sejam consideradas
+hostnames:
+  - public_dns_name                # Usa o DNS público para SSH
+keyed_groups:
+  - key: tags.Name
+    prefix: tag_Name_              # Agrupa os hosts conforme o valor da tag "Name"
+

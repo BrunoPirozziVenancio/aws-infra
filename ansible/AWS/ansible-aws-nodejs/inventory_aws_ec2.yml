@@ -1,0 +1,14 @@
+# Inventário dinâmico da AWS, filtra as instâncias EC2 pelas tags Ansible=true e Name=nodejs-server.
+
+plugin: aws_ec2                    # Usa o plugin oficial da AWS para inventário dinâmico
+regions:
+  - us-east-1                            # Região onde estão suas instâncias (mude se necessário)
+filters:
+  tag:Ansible: "true"                  # Só pega instâncias com a tag Ansible=true
+  tag:Name: "nodejs-server"                # E com tag Name=nodejs-server
+  instance-state-name: running                 # Só pega instâncias que estão rodando
+hostnames:
+  - public_dns_name                      # Usa o DNS público da instância para se conectar
+keyed_groups:
+  - key: tags.Name                       # Agrupa hosts pelo valor da tag "Name"
+    prefix: tag_Name_

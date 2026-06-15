@@ -1,0 +1,7 @@
+# Arquivo de inventário informando como o Ansible acessará sua máquina na AWS.all
+
+  hosts:
+    ec2_instance:
+      ansible_host: 54.123.45.67          # IP público da instância EC2
+      ansible_user: ec2-user            # Usuário padrão das AMIs Amazon Linux/Ubuntu
+      ansible_ssh_private_key_file: ~/.ssh/minha-chave.pem            # Caminho da sua chave PEM

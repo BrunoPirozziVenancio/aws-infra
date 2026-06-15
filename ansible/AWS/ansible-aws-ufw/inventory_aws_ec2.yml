@@ -1,0 +1,15 @@
+# Mesmo tpipo de inventário dinamico usado no arquivo "ansible-aws-users-hardening"
+
+plugin: aws_ec2
+regions:
+  - us-east-1
+filters:
+  tag:Ansible: "true"
+  tag:Name: "secure-server"
+  instance-state-name: running
+hostnames:
+  - public_dns_name
+keyed_groups:
+  - key: tags.Name
+    prefix: tag_Name_
+

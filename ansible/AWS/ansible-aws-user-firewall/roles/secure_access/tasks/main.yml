@@ -1,0 +1,86 @@
+# Criação e configuração segura de usuários + UFW
+
+# Cria os usuários com shell bash e senha criptografada
+
+- name: Criar novos usuários
+  user:
+    name: "{{ item.nome }}"
+    password: "{{ item.senha }}"
+    shell: /bin/bash
+    state: present
+  loop: "{{ novo_usuarios }}"
+
+#  Cria diretório .ssh com permissões corretas
+
+- name: Criar pasta .ssh
+  file:
+    path: "/home/{{ item.nome }}/.ssh"
+    state: directory
+    owner: "{{ item.nome }}"
+    group: "{{ item.nome }}"
+    mode: '0700'
+  loop: "{{ novo_usuarios }}"
+
+#  Copia a chave pública para autorizar login SSH
+
+- name: Adicionar chave pública
+  copy:
+    content: "{{ item.chave_ssh }}"
+    dest: "/home/{{ item.nome }}/.ssh/authorized_keys"
+    owner: "{{ item.nome }}"
+    group: "{{ item.nome }}"
+    mode: '0600'
+  loop: "{{ novo_usuarios }}"
+
+#  Bloqueia login como root via SSH
+
+- name: Desabilitar login SSH para root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+
+# Bloqueia login com senha (só aceita chave)
+
+- name: Desabilitar autenticação por senha
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+
+# Reinicia o serviço SSH para aplicar as mudanças
+
+- name: Reiniciar SSH
+  service:
+    name: sshd
+    state: restarted
+
+# Instala o UFW (caso não esteja instalado)
+
+- name: Instalar UFW
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
+# Bloqueia todas as conexões por padrão
+
+- name: Bloquear todo tráfego por padrão
+  ufw:
+    default: deny
+    direction: incoming
+
+# Libera portas configuradas (SSH, HTTP, HTTPS)
+
+- name: Permitir portas definidas
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop: "{{ portas_permitidas }}"
+
+# Ativa o firewall
+
+- name: Ativar UFW
+  ufw:
+    state: enabled
+    enabled: yes

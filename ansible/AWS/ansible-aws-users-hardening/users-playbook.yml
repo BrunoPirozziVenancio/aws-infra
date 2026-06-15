@@ -1,0 +1,9 @@
+# Playbook principal que define o host de destino e executa a role de segurança.
+
+- name: Criar usuários e aplicar hardening
+  hosts: tag_Name_hardened-server              # Aponta para instâncias com Name=hardened-server
+  become: true                       # Permite executar tarefas como sudo (necessário para criar usuários e alterar config do sistema)
+
+  roles:
+    - security                     # Aponta para a pasta roles/security (onde estão as tasks reais)
+  

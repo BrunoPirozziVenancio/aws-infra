@@ -1,0 +1,9 @@
+# Esse playbook executa nas instâncias com tag Name=webserver
+# Usa become: true para virar root com sudo
+# Aplica a role apache (que está na pasta, roles/apache/tasks/main.yml)
+
+- name: Configurar servidor Apache na AWS
+  hosts: tag_Name_webserver
+  become: true
+  roles:
+    - apache

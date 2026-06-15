@@ -1,0 +1,14 @@
+# Aqui definimos os usuários a serem criados, sua senha criptografada e as portas a serem liberadas no firewall
+
+# Definições globais aplicadas a todos os hosts
+
+novo_usuarios:
+  - nome: devops
+    senha: "$6$rounds=100000$abc123$xyz..."              # Senha criptografada com openssl passwd -6
+    chave_ssh: "{{ lookup('file', 'roles/secure_access/files/id_rsa.pub') }}"
+
+portas_permitidas:
+  - 22     # SSH
+  - 80     # HTTP
+  - 443    # HTTPS
+

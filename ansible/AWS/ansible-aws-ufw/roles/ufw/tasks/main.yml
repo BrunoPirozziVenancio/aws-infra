@@ -1,0 +1,51 @@
+# Tarefas da role ufw
+
+# Instala o pacote ufw (geralmente vem pré-instalado em distribuições Linux como Ubuntu e Debian, mas pode ser necessário instalar em outras)
+
+- name: Instalar UFW (Ubuntu/Debian only)
+  apt:
+    name: ufw
+    state: present
+  when: ansible_os_family == "Debian"
+
+  # Garante que UFW esteja desabilitado antes de configurar
+  
+- name: Desabilitar UFW antes de aplicar regras
+  command: ufw disable
+  ignore_errors: yes
+
+# Permite conexão SSH (essencial para não se bloquear)
+
+- name: Permitir SSH (porta 22)
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+
+# Exemplo: permitir acesso HTTP
+
+- name: Permitir HTTP (porta 80)
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+# Exemplo: permitir acesso HTTPS
+
+- name: Permitir HTTPS (porta 443)
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+
+# Bloqueia todas as demais conexões por padrão
+
+- name: Definir política padrão como "deny"
+  command: ufw default deny incoming
+
+# Ativa o firewall
+
+- name: Ativar UFW
+  command: ufw --force enable
+
+
