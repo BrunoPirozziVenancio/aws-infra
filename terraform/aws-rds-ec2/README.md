@@ -12,7 +12,7 @@ Arquitetura completa com servidor web EC2 conectado a banco de dados MySQL no RD
 
 ## Recursos criados
 
-- VPC + subnets publicas e privadas
+- VPC com subnets publicas e privadas
 - Internet Gateway e Route Table
 - EC2 com Nginx instalado via user_data
 - RDS MySQL 8.0 em subnet privada
