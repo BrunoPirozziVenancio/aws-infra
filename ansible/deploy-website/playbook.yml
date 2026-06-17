@@ -1,0 +1,49 @@
+---
+- name: Deploy Website com Nginx
+  hosts: webserver
+  become: true
+  vars:
+    website_dir: /var/www/html
+    nginx_port: 80
+  tasks:
+    - name: Atualizar pacotes
+      yum:
+        update_cache: yes
+    - name: Instalar Nginx
+      yum:
+        name: nginx
+        state: present
+    - name: Iniciar e habilitar Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+    - name: Criar diretorio do site
+      file:
+        path: "{{ website_dir }}"
+        state: directory
+        mode: '0755'
+    - name: Fazer deploy do index.html
+      copy:
+        dest: "{{ website_dir }}/index.html"
+        content: |
+          <!DOCTYPE html>
+          <html lang="pt-br">
+          <head>
+            <meta charset="UTF-8">
+            <title>Meu Website na AWS</title>
+            <style>
+              body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
+              h1 { color: #FF9900; }
+              p { color: #333; }
+            </style>
+          </head>
+          <body>
+            <h1>Website rodando na AWS!</h1>
+            <p>Provisionado com Terraform e configurado com Ansible.</p>
+          </body>
+          </html>
+    - name: Reiniciar Nginx
+      service:
+        name: nginx
+        state: restarted
