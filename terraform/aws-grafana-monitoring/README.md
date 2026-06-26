@@ -2,6 +2,12 @@
 
 Projeto completo de observabilidade monitorando 5 servidores na AWS com Prometheus, Node Exporter e Grafana.
 
+Este projeto faz parte de uma serie de 3 implementacoes do mesmo sistema de monitoramento em ambientes diferentes. O dashboard e identico nas 3 versoes, o que muda e onde a infraestrutura roda:
+
+- docker-labs/docker-compose/grafana-monitoring: tudo roda localmente via Docker Compose, ideal para testes e estudo
+- aws-infra/terraform/aws-grafana-monitoring (este projeto): os servidores sao instancias EC2 reais na AWS
+- oci-infra/terraform/projects/oci-grafana-monitoring: os servidores sao instancias Compute reais na OCI
+
 ## Arquitetura
 
 - 1 servidor de banco de dados (MySQL)
@@ -17,10 +23,6 @@ Projeto completo de observabilidade monitorando 5 servidores na AWS com Promethe
 - Disco: percentual de uso, leitura/escrita em bytes/s e IOPS
 - Rede: trafego de entrada e saida em bytes/s
 - Sistema: uptime, processos rodando e conexoes abertas
-
-## Dashboard Grafana
-
-O dashboard e provisionado automaticamente com 13 paineis cobrindo todas as metricas acima, organizados por categoria.
 
 ## Pre-requisitos
 
@@ -45,10 +47,9 @@ ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
 
 ## Passo 4 - Acessar o Grafana
 
-Abra no navegador:
 http://IP_DO_SERVIDOR_MONITORAMENTO:3000
 
-Login padrao:
+Login:
 - Usuario: admin
 - Senha: admin
 
